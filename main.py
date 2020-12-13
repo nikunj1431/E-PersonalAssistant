@@ -1,5 +1,10 @@
 from webbrowser import open_new
 import os
+from timezonefinder import TimezoneFinder
+from geopy.geocoders import Nominatim
+import pytz
+import datetime
+import geograpy
 
 #This is the code for the openning the websites
 dict_of_websites = {"wikipedia": "https:\\www.wikipedia.org", "youtube":"https:\\www.youtube.com", "google":"https:\\www.google.com", "gmail":"https:\\www.gmail.com", "github":"https:\\www.gihtub.com", 'stack overflow':'https:\\www.stackoverflow.com', 'amazon':'https:\\www.amazon.in', 'flipkart':'https:\\www.flipkart.com'}
@@ -46,7 +51,41 @@ def read_websites():
             website_url = item.split(',')[1]
             dict_of_websites[website_name] = website_url
 
+def display_time(prompt):
+    #get the place in the prompt in the form of a list
+    place = geograpy.get_place_context(text = prompt)
 
+    #check if the place is in the list of countries, cities or regions
+    if (place.countries or place.cities or place.regions):
+        lad = input("Please enter the location again: ") #if a location is given, ask the user to enter the location again
+    else: #if no location is given, ask the user to enter a location
+        lad = input("Please enter the location: ")
+
+    #initialize Nominatim API
+    geolocator = Nominatim(user_agent = "geoapiExercises")
+
+    #getting latitude and longitude
+    location = geolocator.geocode(lad)
+
+    #pass latitude and longitude to TimezoneFinder
+    obj = TimezoneFinder()
+    try:
+        result = obj.timezone_at(lat = location.latitude, lng = location.longitude)
+    except:
+        print("Location not found")
+        return
+        
+    #get the timezone
+    time_zone = pytz.timezone(result)
+
+    #get the date and time of the time zone
+    time_date_now = datetime.datetime.now(time_zone)
+
+    #display the time and date of the location
+    print("Current time in ", lad, ":")
+    print(time_date_now.strftime("%I:%M %p"))
+    print(time_date_now.strftime("%A, %d %B %Y"))
+    
 #The following code is used to create to dos:
 
 
@@ -57,6 +96,8 @@ def main():
     except Exception as excep:
         pass
     prompt = input("Hi this is Baburao. How may i help you?")
+    if 'time' in prompt.lower():
+        display_time(prompt)
     if 'open' in prompt.lower():
         if open_website(prompt) == False:
             if 'Y' in input("No such website found in our list, do you want to add it to the list?").upper():
