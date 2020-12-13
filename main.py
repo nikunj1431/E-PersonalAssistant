@@ -5,18 +5,18 @@ from geopy.geocoders import Nominatim
 import pytz
 import datetime
 import geograpy
+import pyttsx3
+
+# init function to get an engine instance for the speech synthesis  
+engine = pyttsx3.init() 
+engine.say('Hello! How may I help you?')
+# run and wait method for processing the voice commands  
+engine.runAndWait() 
 
 #This is the code for the openning the websites
 dict_of_websites = {"wikipedia": "https:\\www.wikipedia.org", "youtube":"https:\\www.youtube.com", "google":"https:\\www.google.com", "gmail":"https:\\www.gmail.com", "github":"https:\\www.gihtub.com", 'stack overflow':'https:\\www.stackoverflow.com', 'amazon':'https:\\www.amazon.in', 'flipkart':'https:\\www.flipkart.com'}
 #This is the list of websites this program can open by default:
-#wikipedia
-# youtube
-# google
-# gmail
-# github
-# stack overflow
-# amazon india
-# flipkart
+#wikipedia, youtube, google, gmail,github, stack overflow, amazon india, flipkart
 
 def open_website(prompt):#Method used for opening a website
     prompt_list = prompt.split()
